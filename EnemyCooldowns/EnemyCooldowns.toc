@@ -1,0 +1,8 @@
+## Interface: 30300
+## Author: frostatom
+
+spells.lua
+table.lua
+frame_icon.lua
+frame_group.lua
+main.lua
