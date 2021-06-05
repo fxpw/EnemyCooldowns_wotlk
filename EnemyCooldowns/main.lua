@@ -2,6 +2,7 @@ local ADDON_NAME,engine = ...
 
 local GROUPS_OFFSET = 22
 local POSITION_X,POSITION_Y = 400,-180
+local CHARS_LIMIT = 8
 local COMBATLOG_OBJECT_REACTION_NEUTRAL = COMBATLOG_OBJECT_REACTION_NEUTRAL
 local COMBATLOG_OBJECT_REACTION_HOSTILE	= COMBATLOG_OBJECT_REACTION_HOSTILE
 local COMBATLOG_OBJECT_REACTION_MASK = COMBATLOG_OBJECT_REACTION_MASK
@@ -11,6 +12,7 @@ local table = engine.table
 local bit = bit
 local next = next
 local GetTime = GetTime
+local strlenutf8 = strlenutf8
 
 
 local eventFrame = CreateFrame("frame")
@@ -166,7 +168,9 @@ function engine:COMBAT_LOG_EVENT_UNFILTERED(_,subEvent,...)
 			if isUpdateRequired then
 				if not GUID2name[srcGUID] then
 					local _,class = GetPlayerInfoByGUID(srcGUID)
-					GUID2name[srcGUID] = CLASS2HEXCOLOR[class or "none"]..(srcName or ""):gsub("-.*$","")
+					srcName = (srcName or ""):gsub("-.*$","")
+					local nonAscii = strlenutf8(srcName) ~= #srcName
+					GUID2name[srcGUID] = CLASS2HEXCOLOR[class or "none"]..srcName:sub(1,nonAscii and CHARS_LIMIT*2 or CHARS_LIMIT)
 				end
 
 				self:UpdateTracker(srcGUID)
